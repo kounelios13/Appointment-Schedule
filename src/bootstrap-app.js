@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const {
+    app,
+    BrowserWindow,
+    ipcMain
+} = require('electron');
 
 const path = require('path');
 
@@ -39,7 +43,7 @@ app.on('ready', () => {
         protocol: 'file:',
         slashes: true
     }));
-    appointmentsWindow.on('close', function (e, data) {
+    appointmentsWindow.on('close', (e, data) => {
         e.preventDefault();
         appointmentsWindow.minimize();
     });
@@ -48,30 +52,30 @@ app.on('ready', () => {
         protocol: 'file:',
         slashes: true
     }));
-    newAppointmentWindow.on('close', function (e, data) {
+    newAppointmentWindow.on('close', (e, data) => {
         e.preventDefault();
-        
+
         newAppointmentWindow.minimize();
     });
-    mainWindow.on('close',function(){
+    mainWindow.on('close', () => {
         app.quit();
     });
 });
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
     app.quit();
 });
 
-ipcMain.on('view-user-appointments', function (event, data) {
+ipcMain.on('view-user-appointments', (event, data) => {
     appointmentsWindow.show();
-}).on('show-appointment-registration-page', function (event, data) {
+}).on('show-appointment-registration-page', (event, data) => {
     newAppointmentWindow.show();
-}).on('registered-new-appointment',function(event,data){
-    appointmentsWindow.webContents.send('registered-new-appointment',data);
-}).on('appointment-cancelled', function (event, id) {
+}).on('registered-new-appointment', (event, data) => {
+    appointmentsWindow.webContents.send('registered-new-appointment', data);
+}).on('appointment-cancelled', (event, id) => {
     //@TODO
     //Send the message to every renderer that needs it
-}).on('appointment-completed', function (event, id) {
+}).on('appointment-completed', (event, id) => {
     //@TODO
-}).on('appointment-deleted',function(event,id){
+}).on('appointment-deleted', (event, id) => {
     //@TODO
 });

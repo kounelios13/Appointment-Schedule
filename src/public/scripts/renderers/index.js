@@ -1,11 +1,12 @@
 const {ipcRenderer} = require('electron');
-window.addEventListener('DOMContentLoaded',function(){
+
+window.addEventListener('DOMContentLoaded',()=>{
     const createAppointment = document.getElementById('create-appointment');
     const viewAppointments = document.getElementById('view-appointments');
-    viewAppointments.addEventListener("click",function(){
+    viewAppointments.addEventListener("click",()=>{
         ipcRenderer.send('view-user-appointments');
     });
-    createAppointment.addEventListener('click',function(){
+    createAppointment.addEventListener('click',()=>{
         ipcRenderer.send('show-appointment-registration-page');
     });
 });

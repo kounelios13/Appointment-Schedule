@@ -1,31 +1,38 @@
-#no-appointments-left{
+#no-appointments-left {
     display: none;
 }
-[draggable=true] ,#bin{
+
+[draggable=true],
+#bin {
     -khtml-user-drag: element;
     -webkit-user-drag: element;
     -khtml-user-select: none;
     -webkit-user-select: none;
-  } 
-  #bin{
-      text-align:center;
-  }
-.extra-info,.appointment-room{
-    font-size:20px;
+    user-select: none;
 }
-.extra-info{
+
+#bin {
+    text-align: center;
+}
+
+.extra-info,
+.appointment-room {
+    font-size: 20px;
+}
+
+.extra-info {
     font-style: italic;
 }
-.appointment-card{
-    /* transition: 800ms ease-in all; */
-}
-.dragged-appointment{
+
+.dragged-appointment {
     /* display: none; */
-    transform:scale(0.6);
+    transform: scale(0.6);
 }
-.mbox-wrapper{
-    background:rgba(0, 0, 0, .8);
+
+.mbox-wrapper {
+    background: rgba(0, 0, 0, .8);
 }
-.mbox-wrapper-orange{
-    background: rgba(240,0,1,.8);
+
+.mbox-wrapper-orange {
+    background: rgba(240, 0, 1, .8);
 }

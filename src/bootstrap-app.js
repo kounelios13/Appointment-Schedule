@@ -63,21 +63,15 @@ app.on('window-all-closed', function () {
 
 ipcMain.on('view-user-appointments', function (event, data) {
     appointmentsWindow.show();
-});
-ipcMain.on('show-appointment-registration-page', function (event, data) {
+}).on('show-appointment-registration-page', function (event, data) {
     newAppointmentWindow.show();
-});
-ipcMain.on('registered-new-appointment',function(event,data){
+}).on('registered-new-appointment',function(event,data){
     appointmentsWindow.webContents.send('registered-new-appointment',data);
-});
-ipcMain.on('appointment-cancelled', function (event, id) {
+}).on('appointment-cancelled', function (event, id) {
     //@TODO
     //Send the message to every renderer that needs it
-});
-
-ipcMain.on('appointment-completed', function (event, id) {
+}).on('appointment-completed', function (event, id) {
     //@TODO
-});
-ipcMain.on('appointment-deleted',function(event,id){
+}).on('appointment-deleted',function(event,id){
     //@TODO
 });

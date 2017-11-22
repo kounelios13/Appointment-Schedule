@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron');
 window.addEventListener('DOMContentLoaded',function(){
-    createAppointment = document.getElementById('create-appointment');
-    viewAppointments = document.getElementById('view-appointments');
+    const createAppointment = document.getElementById('create-appointment');
+    const viewAppointments = document.getElementById('view-appointments');
     viewAppointments.addEventListener("click",function(){
         ipcRenderer.send('view-user-appointments');
     });

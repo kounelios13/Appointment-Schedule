@@ -1,0 +1,47 @@
+head
+    meta(charset="utf-8")
+    meta(name="viewport" ,content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
+    link(rel="stylesheet", href="../../../node_modules/materialize-box/src/mbox.css")
+    link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    link(rel="stylesheet",href="../stylesheets/appointments.css")
+    link(rel="stylesheet",href="../stylesheets/gradients.css")
+    script.
+        if(typeof module==='object'){
+            window.module = module;
+            module = undefined;
+        }
+    
+    script(src='../../../node_modules/jquery/dist/jquery.min.js')
+    script.
+        if(typeof window.module){
+            module = window.module;
+            window.module = undefined;
+        }
+    script(src='../../../node_modules/materialize-css/dist/js/materialize.min.js')
+    script(src='../../../node_modules/materialize-box/src/mbox.js')
+    script(src='../scripts/renderers/appointments.js')
+body 
+    .container
+        h2.center-align Your appointments
+        #display
+            select#appointment-select
+        #appointment-card-container
+        
+        .row#no-appointments-left
+             .col.s12.m12.xl12.center-align
+                .card.hoverable
+                    .card-content
+                        h1 Congratulations
+                        p No more appointments
+    
+        .row
+            .col.s12.m12.xl12.center-align
+                i#bin.large.material-icons delete
+    #cancel-appointment-modal.modal
+        .modal-content
+            h4 Are you sure you want to cancel the selected appointment ?
+        .modal-footer
+            a.green-text.confirm-ok.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Yes I am sure!
+            a.red-text.confirm-cancel.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Cancel
+    

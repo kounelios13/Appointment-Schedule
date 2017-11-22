@@ -1,0 +1,32 @@
+head
+    meta(charset="utf-8")
+    meta(name="viewport" ,content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
+    link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    link(rel="stylesheet",href="../stylesheets/index.css")
+    script.
+        if(typeof module==='object'){
+            window.module = module;
+            module = undefined;
+        }
+    
+    script(src='../../../node_modules/jquery/dist/jquery.min.js')
+    script(src='../scripts/renderers/index.js')
+    script.
+        if(typeof window.module){
+            module = window.module;
+            window.module = undefined;
+        }
+body.grey.lighten-2
+    .container
+       .row#group
+            .col.s12.lg12.xl12.m12.center-align
+                button#create-appointment.btn.center-align Create new appointment
+        .row
+            .col.s12.lg12.xl12.m12.center-align
+                button#view-appointments.btn.center-align View appointments
+        //- .row
+        //-     .col.s12.lg12.xl12.m12.center-align
+                button#view-history.btn.center-align Show history
+
+            

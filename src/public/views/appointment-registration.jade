@@ -1,0 +1,55 @@
+head
+    meta(charset="utf-8")
+    meta(name="viewport" ,content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
+    link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    style.
+        .modal-title{
+            font-size:30px;
+            font-weight:400;
+        }
+        #success-modal{
+            box-shadow:0 0 4px 0 #4CAF50 !important;
+        }
+        #success-modal .modal-content p{
+            font-size:22px;
+        }
+    script.
+        if(typeof module==='object'){
+            window.module = module;
+            module = undefined;
+        }
+    
+    script(src='../../../node_modules/jquery/dist/jquery.min.js')
+    script.
+        if(typeof window.module){
+            module = window.module;
+            window.module = undefined;
+        }
+    script(src='../../../node_modules/materialize-css/dist/js/materialize.min.js')
+    script(src='../scripts/renderers/appointment-registration.js')
+body
+    .container
+        form#appointment-registration-form(action='#')
+            .input-field
+                input#appointment-room.validate(type='text',name='appointment-room',data-length='140',length='140')
+                label(for='appointment-room') Appointment Room
+            .input-field
+                input#registration-date.datepicker.validate(type='text',name='registration-date')
+                label(for='registration-date') Select date
+            .input-field
+                textarea#extra-info.materialize-textarea(data-length='1000',length='1000')
+                label(for='extra-info') Write some extra info about your appointment    
+            button#submit-appointment.btn.btn-submit(type='submit')
+                |Create new appointment 
+                i.material-icons.right send
+   
+    #success-modal.modal
+        .modal-content
+            h4.modal-title.green-text Success
+            .divider
+            p Your new appointment has been saved
+        .modal-footer
+            a.green-text.confirm-ok.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Ok
+            
+

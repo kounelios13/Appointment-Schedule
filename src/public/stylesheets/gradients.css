@@ -19,3 +19,6 @@
 .gradient-cloat{
     background: linear-gradient(to left, #070000, #4c0001, #070000)!important;
 }
+.main-page-background{
+    background:linear-gradient(to right, rgb(151, 220, 241), #267b90)!important;
+}

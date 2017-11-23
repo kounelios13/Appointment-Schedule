@@ -5,3 +5,11 @@
 .btn{
     width:100%;
 }
+.bold{
+    font-weight:bold;
+}
+body{
+    margin:0;
+    padding:0;
+    background:linear-gradient(to right, rgb(151, 220, 241), #267b90);
+}

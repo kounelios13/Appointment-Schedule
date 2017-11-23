@@ -228,7 +228,7 @@ $(function () {
             checkTotalAvailableDates();
         });
     });
-    interact('.card').draggable({
+    interact('.appointment-card .card').draggable({
         onmove: (event) => {
             if (event.target.getAttribute('keep-transform')) {
                 //If we keep dragging the card it means we didn't delete it so we wont keep transform

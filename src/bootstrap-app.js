@@ -13,24 +13,25 @@ let appointmentsWindow = null;
 let newAppointmentWindow = null;
 
 app.on('ready', () => {
+    const [width,height] = [1280,800];
     const parent = mainWindow = new BrowserWindow({
-        width: 800,
-        heigth: 600,
+        width,
+        height,
         title: 'Appointment Schedule'
     });
 
     appointmentsWindow = new BrowserWindow({
-        width: 1080,
-        height: 720,
+        width,
+        height,
         show: false,
-        parent,
+        skipTaskbar:true,
         title: 'View Appointments'
     });
     newAppointmentWindow = new BrowserWindow({
-        width: 1080,
-        height: 720,
+        width,
+        height,
         show: false,
-        parent,
+        skipTaskbar:true,
         title: 'Create new Appointment'
     })
     mainWindow.loadURL(url.format({

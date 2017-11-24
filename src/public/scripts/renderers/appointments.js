@@ -3,7 +3,6 @@ const {
 } = require('electron');
 const cardUtils = require('../scripts/custom_modules/card-utilities.js');
 const appointmentUtils = require('../scripts/custom_modules/appointment-utilities.js');
-const watcher = require('../scripts/custom_modules/storage-watcher.js');
 const interact = require('interact.js');
 const lockr = require('lockr');
 
@@ -232,6 +231,7 @@ $(function () {
                 //the card won't reset its transform
                 event.target.removeAttribute('keep-transform');
             }
+            console.log(`dx ${event.dx} dy ${event.dy}`)
             const target = event.target,
                 // keep the dragged position in the data-x/data-y attributes
                 x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,

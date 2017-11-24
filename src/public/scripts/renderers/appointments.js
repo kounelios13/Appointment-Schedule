@@ -11,10 +11,6 @@ const lockr = require('lockr');
 //1:gradientName -> The gradient class name to use
 //2:colorizeActions -> If true the `.card-action` div of the card should have the specified gradient color too
 let cardThemeOptions = lockr.get('card-theme-options');
-//Path must be relative to views folder
-const {
-    Appointment
-} = require('../scripts/classes/appointment.js');
 
 let appointments = lockr.get('appointments') || [];
 

@@ -1,24 +1,35 @@
-.gradient-coal{
+.gradient-coal {
     background: linear-gradient(to left, #eb5757, #000000) !important;
 }
-.gradient-html{
+
+.gradient-html {
     background: linear-gradient(to bottom, #e44d26, #f16529) !important;
 }
-.gradient-learning-and-leading{
+
+.gradient-learning-and-leading {
     background: linear-gradient(to bottom, #f7971e, #ffd200) !important;
 }
-.gradient-very-blue{
+
+.gradient-very-blue {
     background: linear-gradient(to left, #0575e6, #021b79) !important;
 }
-.gradient-minimal-red{
+
+.gradient-minimal-red {
     background: linear-gradient(to bottom, #f00000, #dc281e) !important;
 }
-.gradient-deep-sea-space{
+
+.gradient-deep-sea-space {
     background: linear-gradient(to right, #2c3e50, #4ca1af)!important;
 }
-.gradient-cloat{
+
+.gradient-cloat {
     background: linear-gradient(to left, #070000, #4c0001, #070000)!important;
 }
-.main-page-background{
-    background:linear-gradient(to right, rgb(151, 220, 241), #267b90)!important;
+
+.main-page-background {
+    background: linear-gradient(to right, rgb(151, 220, 241), #267b90)!important;
+}
+
+.curiosity-blue {
+    background: linear-gradient(to left, #525252, #3d72b4)!important;
 }

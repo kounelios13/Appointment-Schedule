@@ -19,7 +19,6 @@ app.on('ready', () => {
         height,
         title: 'Appointment Schedule'
     });
-
     appointmentsWindow = new BrowserWindow({
         width,
         height,
@@ -61,8 +60,7 @@ app.on('ready', () => {
     mainWindow.on('close', () => {
         app.quit();
     });
-});
-app.on('window-all-closed', () => {
+}).on('window-all-closed', () => {
     app.quit();
 });
 

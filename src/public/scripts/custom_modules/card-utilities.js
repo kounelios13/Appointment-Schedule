@@ -73,22 +73,7 @@ function createCard(options, output) {
 
 }
 
-/**
- * Adds relevant listeners for dragging to a card
- * @param {string} id The id of the card 
- * @param {Function} callback What to do when a card is being dragged 
- */
-function makeCardDraggable(id, callback) {
-    //@TODO
-    //Implement all drag and drop handlers 
-    //@TODO
-    //When dragging an element makethe element leave its original position
-    //and disable the ghost image
-    
-}
-
 module.exports = {
     createCard,
-    colorizeCard,
-    makeCardDraggable
+    colorizeCard
 };

@@ -52,11 +52,6 @@ function deleteAppointmentById(id) {
  */
 function createAppointmentCard(appointment, outputContainer) {
     cardUtils.createCard(appointment, outputContainer);
-    cardUtils.makeCardDraggable(appointment.id, function (e) {
-        console.log('Yeah dragging around');
-        //$(this).hide();
-        $(this).addClass('dragged-appointment');
-    });
 }
 
 /**

@@ -33,3 +33,15 @@
 .curiosity-blue {
     background: linear-gradient(to left, #525252, #3d72b4)!important;
 }
+
+.reef {
+    background: linear-gradient(to top, #00d2ff, #3a7bd5)!important;
+}
+
+.pinot-noir {
+    background: linear-gradient(to left, #4b6cb7, #182848)!important;
+}
+
+.gradient-hydrogen {
+    background: linear-gradient(to bottom, #667db6, #0082c8, #0082c8, #667db6);
+}

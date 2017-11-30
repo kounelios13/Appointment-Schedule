@@ -45,6 +45,7 @@
     }
   },
   "dependencies": {
+    "chart.js": "^2.7.1",
     "electron-compile": "^6.4.2",
     "electron-squirrel-startup": "^1.0.0",
     "interact.js": "^1.2.8",

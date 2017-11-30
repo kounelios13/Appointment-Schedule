@@ -20,6 +20,7 @@ app.on('ready', () => {
         title: 'Appointment Schedule'
     });
     appointmentsWindow = new BrowserWindow({
+        parent,
         width,
         height,
         show: false,
@@ -27,6 +28,7 @@ app.on('ready', () => {
         title: 'View Appointments'
     });
     newAppointmentWindow = new BrowserWindow({
+        parent,
         width,
         height,
         show: false,
@@ -54,7 +56,6 @@ app.on('ready', () => {
     }));
     newAppointmentWindow.on('close', (e, data) => {
         e.preventDefault();
-
         newAppointmentWindow.minimize();
     });
     mainWindow.on('close', () => {

@@ -1,0 +1,26 @@
+head
+    title='Appointment History'
+    meta(charset='utf-8')
+    meta(name="viewport" ,content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
+    link(rel="stylesheet", href="../../../node_modules/materialize-box/src/mbox.css")
+    link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    link(rel="stylesheet",href="../stylesheets/appointments.css")
+    link(rel="stylesheet",href="../stylesheets/gradients.css")
+    script.
+        if(typeof module==='object'){
+            window.module = module;
+            module = undefined;
+        }
+    
+    script(src='../../../node_modules/jquery/dist/jquery.min.js')
+    script.
+        if(typeof window.module){
+            module = window.module;
+            window.module = undefined;
+        }
+    script(src='../../../node_modules/materialize-css/dist/js/materialize.min.js')
+    script(src='../../../node_modules/materialize-box/src/mbox.js')
+    script(src='../scripts/renderers/history.js')
+body
+    canvas

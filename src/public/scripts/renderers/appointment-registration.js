@@ -2,8 +2,15 @@ const lockr = require('lockr');
 const { Appointment } = require('../scripts/classes/appointment.js');
 const { ipcRenderer } = require('electron');
 const appointments = lockr.get('appointments') || [];
-
+/**
+ * @TODO
+ * Instead of loading allt he appointments from localStorage just to add a new one do the following:
+ * Save the new appointment in a temp variable
+ * Send it to the main process and let the main send it back to all other processes to store it(I have to decide which process will update the localStorage though)
+ */
 function activateGreekLocale() {
+    //@FIX
+    //today ,clear and ok values are not updated
     jQuery.extend(jQuery.fn.pickadate.defaults, {
         monthsFull: ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
         monthsShort: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαι', 'Ιουν', 'Ιουλ', 'Αυγ', 'Σεπ', 'Οκτ', 'Νοε', 'Δεκ'],
@@ -22,9 +29,10 @@ function activateGreekLocale() {
 }
 $(function () {
     $(".modal").modal();
-    if (navigator.language == 'el-GR') {
-        activateGreekLocale();
-    }
+    // if (navigator.language == 'el-GR') {
+    //     activateGreekLocale();
+    // }
+
     $('.datepicker').pickadate({
         format: 'dd/mm/yyyy',
         selectMonths: true, // Creates a dropdown to control month

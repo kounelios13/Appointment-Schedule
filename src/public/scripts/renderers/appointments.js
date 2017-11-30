@@ -1,6 +1,7 @@
 const {
     ipcRenderer
 } = require('electron');
+const chart = require('chart.js');
 const cardUtils = require('../scripts/custom_modules/card-utilities.js');
 const appointmentUtils = require('../scripts/custom_modules/appointment-utilities.js');
 const interact = require('interact.js');
@@ -34,7 +35,6 @@ function checkTotalAvailableDates() {
  * @param {string} id The id of the appointment 
  */
 function deleteAppointmentById(id) {
-    console.warn('Function is just for demonstration.When everything works fine this should be removed');
     $("#" + id).hide('slow', function () {
         const appointmentIndex = appointments.findIndex(ap => ap.id == id);
         delete appointments[appointmentIndex];
@@ -125,10 +125,8 @@ function renderAppointmentList(appointments, filterFunc) {
  */
 function removeDateFromSelect(date) {
     const selectedDate = date;
-    //@TODO
-    //maybe do const options = [...$('#appointment-select option')];
-    const options = $('#appointment-select option');
-    [...options].forEach(option => {
+    const options = [...$('#appointment-select option')];
+    options.forEach(option => {
         if ($(option).text() == selectedDate) {
             $(option).remove();
             $('select').material_select();
@@ -142,6 +140,9 @@ $(function () {
     renderAppointmentList(appointments, (ap) => {
         return (!ap.done && !ap.cancelled);
     });
+    if ($('.appointment-card').length == 0) {
+        $('#no-more-appointments').show();
+    }
     //By default select boxes are hidden till they rendered using material design
     $('select').material_select();
     //Init modals
@@ -204,12 +205,12 @@ $(function () {
     //Don't trigger change event before adding the on('change') event handler but only after that
     $('#appointment-select').trigger('change');
     $(".confirm-ok").on("click", function () {
-        //Find the id of the appointment to cancel
         const appointmentId = $("#cancel-appointment-modal").data("appointment-id");
         const appointmentToCancel = appointments.filter(ap => ap.id == appointmentId).pop();
         //Mark appointment as cancelled
         appointmentToCancel.cancelled = true;
         //After hiding it remove it
+        //Find the id of the appointment to cancel
         $(`#${appointmentId}`).hide("slow", function () {
             console.log('this', $(this))
             $(`#${appointmentId}`).remove();
@@ -226,7 +227,6 @@ $(function () {
                 //the card won't reset its transform
                 event.target.removeAttribute('keep-transform');
             }
-            console.log(`dx ${event.dx} dy ${event.dy}`)
             const target = event.target,
                 // keep the dragged position in the data-x/data-y attributes
                 x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
@@ -254,6 +254,7 @@ $(function () {
         }
     });
     interact('#bin').dropzone({
+        accept: '.appointment-card .card',
         ondrop: function (event) {
             const dropped = event.relatedTarget;
             const preDropTransform = dropped.style.transform;

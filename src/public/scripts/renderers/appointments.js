@@ -172,6 +172,8 @@ $(function () {
             if (totalActiveAppointmentsForDate == 0) {
                 removeDateFromSelect(selectedDate);
             }
+            //fixes #1
+            lockr.set('appointments', appointments);
         });
     });
     $('#display').on('change', '#appointment-select', function () {

@@ -67,25 +67,16 @@ function gatherAppointmentsByMonth(appointments, month) {
 }
 
 
-function buildChartFromAppointments(appointments,chart) {
-
-    /**
-    * @TODO
-    * Instead of creating a new Chart every time create one at the init of the window
-    * and just change its data every time you have to.
-    */
-
-
+function buildChartFromAppointments(appointments, chart) {
     let completed = appointments.filter(e => e.done).length;
     let cancelled = appointments.filter(e => e.cancelled).length;
     let pending = appointments.filter(e => (!e.done && !e.cancelled)).length;
     chart.data.datasets[0].data = [completed, cancelled, pending];
-    chart.update(0);
+    chart.update();
 }
 $(function () {
     const canvas = document.getElementById('stats');
-    const canvasContext = canvas.getContext('2d');
-    let  chart = new Chart(canvasContext, {
+    let chart = new Chart(canvas, {
         responsive: true,
         maintainAspectRatio: true,
         type: 'bar',
@@ -93,7 +84,7 @@ $(function () {
             labels: ['Completed', 'Cancelled', 'Pending'],
             datasets: [{
                 label: '# Appointment status',
-                data: [10,10,10],
+                data: [10, 10, 10],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -124,64 +115,48 @@ $(function () {
         }
     });
     let appointemntYears = getAppointmentDates(appointments, null, true);
-
-    let yearSelect = document.getElementById('year-select');
     let fragment = document.createDocumentFragment();
     appointemntYears.forEach(year => {
-
         let option = document.createElement('option');
         option.innerText = year;
         fragment.appendChild(option);
     });
+    let yearSelect = document.getElementById('year-select');
     yearSelect.appendChild(fragment);
-
     $(yearSelect).material_select();
-
-    $('body').on('change', '#month-select', function () {
-        console.log('Tiggering month')
-        let month = monthNameToNumber($('#month-select').val());
-        let year = parseInt(yearSelect.value);
-        let dataToShow = gatherAppointmentsByYear(appointments, year);
-        dataToShow = gatherAppointmentsByMonth(dataToShow, month);
-        //@TODO
-        //Build a chart from the data above
-       // console.table(dataToShow)
-        if (dataToShow) {
-            buildChartFromAppointments(dataToShow, chart);
-            console.log('Data to find',dataToShow)
-        }
-            
-        else
-            console.log('Found month with no active appointmnets',month)    
-    })
-    $(yearSelect).on('change', function () {
-        console.log('Changing year');
-        let selectedYear = yearSelect.value;
-        let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
-        let months = appointmentsForYear.map(ap => {
-            let month = ap.executionDate.split('/')[1];
-            return parseInt(month);
-        }).map(monthToStringRepresentation);
-        let fragment = document.createDocumentFragment();
+    $('#year-select').on('change', function () {
         let monthSelect = document.getElementById('month-select');
-        
-        monthSelect.innerHTML = '';
+        let monthFragment = document.createDocumentFragment();
         $(monthSelect).material_select('destroy');
-        //Get all the unique values of 'months' array
+        let selectedYear = $(this).val();
+        let filteredAppointments = gatherAppointmentsByYear(appointments, selectedYear);
+        let months = filteredAppointments.map(a => {
+            let month = a.executionDate.split('/')[1];
+            return parseInt(month);
+        });
+        months = Array.from(new Set(months)).map(monthToStringRepresentation);
 
-        months = Array.from(new Set(months));
         months.forEach(month => {
             let option = document.createElement('option');
             option.innerText = month;
-            fragment.appendChild(option);
+            monthFragment.appendChild(option);
         });
 
-        monthSelect.appendChild(fragment);
-        let monthSelectRow = document.getElementById('month-select-row');
-        $(monthSelect).material_select();
-        $(monthSelectRow).show();
-        //$(monthSelect).trigger('change');
+        monthSelect.innerHTML = '';
+        monthSelect.appendChild(monthFragment);
 
+        $(monthSelect).material_select();
+        $('#month-select-row').show();
+        $('#month-select').trigger('change');
     });
-    //$(yearSelect).trigger('change');
+    $('#month-select').on('change', function () {
+
+        let selectedMonth = monthNameToNumber($(this).val());
+
+        let selectedYear = yearSelect.value;
+        let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
+        let filteredAppointments = gatherAppointmentsByMonth(appointmentsForYear, selectedMonth);
+        buildChartFromAppointments(filteredAppointments, chart);
+    });
+    $(yearSelect).trigger('change');
 });

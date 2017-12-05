@@ -5,7 +5,7 @@ head
     link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
     link(rel="stylesheet", href="../../../node_modules/materialize-box/src/mbox.css")
     link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
-    link(rel="stylesheet",href="../stylesheets/appointments.css")
+    link(rel="stylesheet",href="../stylesheets/history.css")
     link(rel="stylesheet",href="../stylesheets/gradients.css")
     script.
         if(typeof module==='object'){
@@ -23,4 +23,16 @@ head
     script(src='../../../node_modules/materialize-box/src/mbox.js')
     script(src='../scripts/renderers/history.js')
 body
-    canvas
+    .container
+        .row
+            .col.s12
+                label Select year
+                .input-field
+                    select#year-select
+        .row#month-select-row
+            .col.s12
+                label Select month
+                .input-field
+                    select#month-select
+                
+        canvas#stats

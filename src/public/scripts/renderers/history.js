@@ -5,7 +5,7 @@ const Chart = require('chart.js');
 const lockr = require('lockr');
 const appointments = lockr.get('appointments') || [];
 
-
+let chart = null;
 const {
     getAppointmentDates
 } = require('../scripts/custom_modules/appointment-utilities');
@@ -76,7 +76,7 @@ function buildChartFromAppointments(appointments, chart) {
 }
 $(function () {
     const canvas = document.getElementById('stats');
-    let chart = new Chart(canvas, {
+    chart = new Chart(canvas, {
         responsive: true,
         maintainAspectRatio: true,
         type: 'bar',
@@ -115,19 +115,22 @@ $(function () {
         }
     });
     let appointemntYears = getAppointmentDates(appointments, null, true);
-    let fragment = document.createDocumentFragment();
+    let yearFragment = document.createDocumentFragment();
     appointemntYears.forEach(year => {
         let option = document.createElement('option');
         option.innerText = year;
-        fragment.appendChild(option);
+        yearFragment.appendChild(option);
     });
     let yearSelect = document.getElementById('year-select');
-    yearSelect.appendChild(fragment);
+    yearSelect.appendChild(yearFragment);
     $(yearSelect).material_select();
     $('#year-select').on('change', function () {
+        const fragment = document.createDocumentFragment();
         let monthSelect = document.getElementById('month-select');
+        //Clear innerHTML begore material_select('destroy')
+        monthSelect.innerHTML = '';
         let monthFragment = document.createDocumentFragment();
-        $(monthSelect).material_select('destroy');
+        $("#month-select").material_select('destroy');
         let selectedYear = $(this).val();
         let filteredAppointments = gatherAppointmentsByYear(appointments, selectedYear);
         let months = filteredAppointments.map(a => {
@@ -141,22 +144,18 @@ $(function () {
             option.innerText = month;
             monthFragment.appendChild(option);
         });
-
-        monthSelect.innerHTML = '';
         monthSelect.appendChild(monthFragment);
-
-        $(monthSelect).material_select();
-        $('#month-select-row').show();
+        
+        $("#month-select").material_select();
         $('#month-select').trigger('change');
     });
     $('#month-select').on('change', function () {
-
         let selectedMonth = monthNameToNumber($(this).val());
-
         let selectedYear = yearSelect.value;
         let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
         let filteredAppointments = gatherAppointmentsByMonth(appointmentsForYear, selectedMonth);
+        console.table(filteredAppointments)
         buildChartFromAppointments(filteredAppointments, chart);
     });
-    $(yearSelect).trigger('change');
+    $('#year-select').trigger('change'); 
 });

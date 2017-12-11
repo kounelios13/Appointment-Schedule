@@ -156,9 +156,7 @@ $(function () {
     }).on("click", ".complete-btn", function () {
         let cardContainer = $(this).closest('.appointment-card');
         let curId = cardContainer.attr('id');
-        console.log(curId)
         appointments.filter(ap => ap.id == curId).pop().done = true;
-        console.log($(this))
         $(`#${curId}`).hide("slow", function () {
             console.log('container', cardContainer)
             $(cardContainer).remove();
@@ -214,7 +212,6 @@ $(function () {
         //After hiding it remove it
         //Find the id of the appointment to cancel
         $(`#${appointmentId}`).hide("slow", function () {
-            console.log('this', $(this))
             $(`#${appointmentId}`).remove();
             //After cancelling an appointment inform all other renderers that might need to use the appointment array
             ipcRenderer.send('appointment-cancelled', appointmentId);

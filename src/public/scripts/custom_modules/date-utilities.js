@@ -10,7 +10,7 @@ const months = {
     4: 'April',
     5: 'May',
     6: 'June',
-    7: 'Jully',
+    7: 'July',
     8: 'August'
 };
 

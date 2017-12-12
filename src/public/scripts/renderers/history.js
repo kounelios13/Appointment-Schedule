@@ -16,18 +16,24 @@ const {
 } = require('../scripts/custom_modules/date-utilities');
 
 
-ipcRenderer.on('appointemnt-cancelled', (event, id) => {
+ipcRenderer.on('appointment-cancelled', (event, id) => {
     let affectedAppointment = apppointments.find(e => e.id == id);
     affectedAppointment.cancelled = true;
     //@TODO
     //Check if the execution date of the appointment is the same as the one that the user has choosen for the chart.If yes redraw the chart with new data
 });
 
-ipcRenderer.on('appointemnt-completed', (event, data) => {
+ipcRenderer.on('appointment-completed', (event, id) => {
     let affectedAppointment = apppointments.find(e => e.id == id);
     affectedAppointment.done = true;
     //@TODO
     //Check if the execution date of the appointment is the same as the one that the user has choosen for the chart.If yes redraw the chart with new data
+});
+
+
+ipcRenderer.on('registered-new-appointment', (event, appointment) => {
+    appointments.push(appointment);
+
 });
 
 /**
@@ -130,7 +136,7 @@ $(function () {
         //Clear innerHTML begore material_select('destroy')
         monthSelect.innerHTML = '';
         let monthFragment = document.createDocumentFragment();
-        $("#month-select").material_select('destroy');
+        $("#month-select").empty();
         let selectedYear = $(this).val();
         let filteredAppointments = gatherAppointmentsByYear(appointments, selectedYear);
         let months = filteredAppointments.map(a => {
@@ -145,7 +151,7 @@ $(function () {
             monthFragment.appendChild(option);
         });
         monthSelect.appendChild(monthFragment);
-        
+        //$("#month-select").material_select('destroy');
         $("#month-select").material_select();
         $('#month-select').trigger('change');
     });
@@ -154,8 +160,9 @@ $(function () {
         let selectedYear = yearSelect.value;
         let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
         let filteredAppointments = gatherAppointmentsByMonth(appointmentsForYear, selectedMonth);
-        console.table(filteredAppointments)
-        buildChartFromAppointments(filteredAppointments, chart);
+        if (selectedMonth && selectedYear && appointmentsForYear && filteredAppointments) {
+            buildChartFromAppointments(filteredAppointments, chart);
+        }
     });
-    $('#year-select').trigger('change'); 
+    $('#year-select').trigger('change');
 });

@@ -25,10 +25,10 @@ body
     .container
         form#appointment-registration-form(action='#')
             .input-field
-                input#appointment-room.validate(type='text',name='appointment-room',data-length='140',length='140')
+                input#appointment-room.validate(type='text',name='appointment-room',data-length='140',length='140',required=true)
                 label(for='appointment-room') Appointment Room
             .input-field
-                input#registration-date.datepicker.validate(type='text',name='registration-date')
+                input#registration-date.datepicker.validate(type='text',name='registration-date',required=true)
                 label(for='registration-date') Select date
             .input-field
                 textarea#extra-info.materialize-textarea(data-length='1000',length='1000')
@@ -44,5 +44,10 @@ body
             p Your new appointment has been saved
         .modal-footer
             a.green-text.confirm-ok.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Ok
-            
+    #error-modal.modal
+        .modal-content
+            h4.modal-title.red-text Error
+            .divider
+            p#error-msg
+            a.red-text.modal-action.modal-close.waves-effect.waves-red.btn-flat(href='#!') Close   
 

@@ -1,6 +1,10 @@
 const lockr = require('lockr');
-const { Appointment } = require('../scripts/classes/appointment.js');
-const { ipcRenderer } = require('electron');
+const {
+    Appointment
+} = require('../scripts/classes/appointment.js');
+const {
+    ipcRenderer
+} = require('electron');
 const appointments = lockr.get('appointments') || [];
 /**
  * @TODO
@@ -50,8 +54,15 @@ $(function () {
         let room = roomInput.val();
         let executionDate = dateInput.val();
         let extraInfo = extraInfoInput.val();
-        if(room.length > Number(roomInput.data("length")) || extraInfo.length > Number(extraInfoInput.data("length"))){
-            alert(`You have exceeded maximum charcters for either the appointment room or for the extra info input`);
+        if (room.length < 1 || executionDate.length < 1) {
+            $("#error-msg").text('Make sure that Appointment room and Date inputs are not empty');
+            $('#error-modal').modal('open');
+            return;
+        }
+
+        if (room.length > Number(roomInput.data("length")) || extraInfo.length > Number(extraInfoInput.data("length"))) {
+            $("#error-msg").text(`You have exceeded maximum charcters for either the appointment room or for the extra info input`);
+            $('#error-modal').modal('open');
             return;
         }
         const newAppointment = new Appointment(
@@ -63,11 +74,11 @@ $(function () {
         lockr.set('appointments', appointments);
         ipcRenderer.send('registered-new-appointment', newAppointment);
         let form = document.querySelector('#appointment-registration-form');
-        $(".modal").modal('open');
+        $("#success-modal").modal('open');
         form.reset();
-        setTimeout(()=>{
+        setTimeout(() => {
             //Close success modal after 4 seconds
-            $(".modal").modal('close');
-        },4000);
+            $("#success-modal").modal('close');
+        }, 4000);
     });
 });

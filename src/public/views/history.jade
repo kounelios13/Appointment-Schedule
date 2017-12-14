@@ -5,7 +5,7 @@ head
     link(rel="stylesheet", href="../../../node_modules/materialize-css/dist/css/materialize.min.css")
     link(rel="stylesheet", href="../../../node_modules/materialize-box/src/mbox.css")
     link(rel="stylesheet",href="https://fonts.googleapis.com/icon?family=Material+Icons")
-    link(rel="stylesheet",href="../stylesheets/history.scss")
+    link(rel="stylesheet",href="../stylesheets/history.css")
     link(rel="stylesheet",href="../stylesheets/gradients.css")
     script.
         if(typeof module==='object'){
@@ -22,7 +22,7 @@ head
     script(src='../../../node_modules/materialize-css/dist/js/materialize.min.js')
     script(src='../../../node_modules/materialize-box/src/mbox.js')
     script(src='../scripts/renderers/history.js')
-body
+body.gradient-deep-sea-space
     .container
         .row
             .col.s12
@@ -35,4 +35,8 @@ body
                 .input-field
                     select#month-select
                 
-        canvas#stats
+    //- DO NOT change the structure below
+    .container  
+        .row
+            .col.s12.m12.l12.xl12  
+                canvas#stats

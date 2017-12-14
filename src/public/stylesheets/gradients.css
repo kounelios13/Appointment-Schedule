@@ -45,3 +45,6 @@
 .gradient-hydrogen {
     background: linear-gradient(to bottom, #667db6, #0082c8, #0082c8, #667db6);
 }
+.gradient-calm-green{
+    background: linear-gradient(45deg,#aff9aa,#ababab);
+}

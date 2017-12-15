@@ -11,7 +11,7 @@ const url = require('url');
 let mainWindow = null;
 let appointmentsWindow = null;
 let newAppointmentWindow = null;
-let historyWindow = null;
+let statisticsWindow = null;
 app.on('ready', () => {
     const [width, height] = [1280, 800];
     const parent = mainWindow = new BrowserWindow({
@@ -35,7 +35,7 @@ app.on('ready', () => {
         skipTaskbar: true,
         title: 'Create new Appointment'
     });
-    historyWindow = new BrowserWindow({
+    statisticsWindow = new BrowserWindow({
         parent,
         width,
         height,
@@ -66,15 +66,15 @@ app.on('ready', () => {
         e.preventDefault();
         newAppointmentWindow.minimize();
     });
-    historyWindow.loadURL(url.format({
-        pathname: path.join(__dirname, "/public/views/history.jade"),
+    statisticsWindow.loadURL(url.format({
+        pathname: path.join(__dirname, "/public/views/statistics.jade"),
         protocol: 'file:',
         slashes: true
     }));
 
-    historyWindow.on('close', (e, data) => {
+    statisticsWindow.on('close', (e, data) => {
         e.preventDefault();
-        historyWindow.minimize();
+        statisticsWindow.minimize();
     });
     mainWindow.on('close', () => {
         app.quit();
@@ -90,19 +90,19 @@ ipcMain.on('view-user-appointments', (event, data) => {
     appointmentsWindow.show();
 }).on('show-appointment-registration-page', (event, data) => {
     newAppointmentWindow.show();
-}).on('view-appointment-history', (event, data) => {
-    historyWindow.show();
+}).on('view-appointment-statistics', (event, data) => {
+    statisticsWindow.show();
 }).on('registered-new-appointment', (event, data) => {
     appointmentsWindow.webContents.send('registered-new-appointment', data);
-    historyWindow.webContents.send('registered-new-appointment', data);
+    statisticsWindow.webContents.send('registered-new-appointment', data);
     mainWindow.webContents.send('registered-new-appointment', data);
 }).on('appointment-cancelled', (event, id) => {
-    historyWindow.webContents.send('appointment-cancelled', id);
+    statisticsWindow.webContents.send('appointment-cancelled', id);
     mainWindow.webContents.send('appointment-cancelled', id);
 }).on('appointment-completed', (event, id) => {
-    historyWindow.webContents.send('appointment-completed', id);
+    statisticsWindow.webContents.send('appointment-completed', id);
     mainWindow.webContents.send('appointment-completed', id);
 }).on('appointment-deleted', (event, id) => {
-    historyWindow.webContents.send('appointment-deleted', id);
+    statisticsWindow.webContents.send('appointment-deleted', id);
     mainWindow.webContents.send('appointment-deleted', id);
 });

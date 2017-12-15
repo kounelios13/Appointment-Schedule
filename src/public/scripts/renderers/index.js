@@ -4,15 +4,15 @@ let appointments = lockr.get('appointments');
 window.addEventListener('DOMContentLoaded',()=>{
     const createAppointment = document.getElementById('create-appointment');
     const viewAppointments = document.getElementById('view-appointments');
-    const viewHistory = document.getElementById('view-appointment-history');
+    const viewStatistics = document.getElementById('view-appointment-statistics');
     viewAppointments.addEventListener("click",()=>{
         ipcRenderer.send('view-user-appointments');
     });
     createAppointment.addEventListener('click',()=>{
         ipcRenderer.send('show-appointment-registration-page');
     });
-    viewHistory.addEventListener('click', () => {
-        ipcRenderer.send('view-appointment-history'); 
+    viewStatistics.addEventListener('click', () => {
+        ipcRenderer.send('view-appointment-statistics'); 
     });
 });
 

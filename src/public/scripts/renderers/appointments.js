@@ -27,11 +27,10 @@ function checkTotalAvailableDates() {
     if (totalActiveAppointmentsForDate.length == 0) {
         removeDateFromSelect(selectedDate);
     }
-    lockr.set('appointments', appointments);
 }
 
 /**
- * Deletes an appointment and updates local storage
+ * Deletes an appointment
  * @param {string} id The id of the appointment 
  */
 function deleteAppointmentById(id) {
@@ -156,12 +155,11 @@ $(function () {
     }).on("click", ".complete-btn", function () {
         let cardContainer = $(this).closest('.appointment-card');
         let curId = cardContainer.attr('id');
-        appointments.filter(ap => ap.id == curId).pop().done = true;
+        appointments.find(ap => ap.id == curId).done = true;
         $(`#${curId}`).hide("slow", function () {
-            console.log('container', cardContainer)
             $(cardContainer).remove();
             //Now that we completed an appointment we need to inform all other renderers that might use our appointments
-            ipcRenderer.send('completed-appointment', curId);
+            ipcRenderer.send('appointment-completed', curId);
             const selectedDate = $("#appointment-select").val();
             const totalActiveAppointmentsForDate = appointments.filter((ap) => {
                 return !ap.done && !ap.cancelled &&
@@ -170,8 +168,7 @@ $(function () {
             if (totalActiveAppointmentsForDate == 0) {
                 removeDateFromSelect(selectedDate);
             }
-            //fixes #1
-            lockr.set('appointments', appointments);
+
         });
     });
     $('#display').on('change', '#appointment-select', function () {
@@ -255,6 +252,7 @@ $(function () {
     interact('#bin').dropzone({
         accept: '.appointment-card .card',
         ondrop: function (event) {
+            
             const dropped = event.relatedTarget;
             const preDropTransform = dropped.style.transform;
             const droppedId = dropped.parentNode.id;
@@ -263,7 +261,7 @@ $(function () {
             mbox.confirm('Are you sure you want to delete that appointment?', function (answer) {
                 if (answer) {
                     deleteAppointmentById(droppedId);
-                    ipcRenderer.send('deleted-appointment', droppedId);
+                    ipcRenderer.send('appointment-deleted', droppedId);
                 } else {
                     dropped.style.transform = 'translate(0,0)';
                     dropped.setAttribute('data-x', 0);

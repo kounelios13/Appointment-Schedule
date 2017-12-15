@@ -83,26 +83,26 @@ app.on('ready', () => {
     app.quit();
 });
 
+//If localStorage needs to be altered it will be done by the mainWindow only
+//Other renderers will just receive a message with the type of alteration and some extra data
+//that will need (e.g. If a new appointment is added all renderers will receive that appointment object)
 ipcMain.on('view-user-appointments', (event, data) => {
     appointmentsWindow.show();
 }).on('show-appointment-registration-page', (event, data) => {
-    console.log('No no history')
     newAppointmentWindow.show();
 }).on('view-appointment-history', (event, data) => {
     historyWindow.show();
- }).on('registered-new-appointment', (event, data) => {
-    //@TODO
-    //Which of the 2 renderers belows should updated the localStorage ? 
+}).on('registered-new-appointment', (event, data) => {
     appointmentsWindow.webContents.send('registered-new-appointment', data);
-    historyWindow.webContents.send('registered-new-window', data);
+    historyWindow.webContents.send('registered-new-appointment', data);
+    mainWindow.webContents.send('registered-new-appointment', data);
 }).on('appointment-cancelled', (event, id) => {
-    //@TODO
-    //Send the message to every renderer that needs it
-    historyWindow.webContents.send('cancel-appointment', id);
+    historyWindow.webContents.send('appointment-cancelled', id);
+    mainWindow.webContents.send('appointment-cancelled', id);
 }).on('appointment-completed', (event, id) => {
-    //@TODO
-    historyWindow.webContents.send('complete-appointment', id);
+    historyWindow.webContents.send('appointment-completed', id);
+    mainWindow.webContents.send('appointment-completed', id);
 }).on('appointment-deleted', (event, id) => {
-    //@TODO
-    historyWindow.webContents.send('delete-appointment', id);
+    historyWindow.webContents.send('appointment-deleted', id);
+    mainWindow.webContents.send('appointment-deleted', id);
 });

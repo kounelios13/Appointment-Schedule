@@ -36,12 +36,17 @@ function sortAppointments(appointments, sortCallback, saveToLocalStorage) {
  * Useful to build a dropdown of appointment dates
  * @param {object[]} appointments An array of appointment objects
  * @param {Function} [filterCallback] A callback that let us filter the appointment dates.It accepts a string which is an appointment date
+ * @param {boolean} onlyYear If true returns only the year from  the dates
  * @returns {string[]} dates
  */
-function getAppointmentDates(appointments, filterCallback) {
+function getAppointmentDates(appointments, filterCallback, onlyYear) {
     let datesSet = new Set();
     appointments.forEach(appointment => {
-        datesSet.add(appointment.executionDate);
+        const aDate = appointment.executionDate;
+        if (aDate) {
+            //Fr some reason execution date might be empty because of stupid me
+            datesSet.add(appointment.executionDate);
+        }
     });
     let dates = Array.from(datesSet);
     if (filterCallback && typeof filterCallback == 'function') {
@@ -50,23 +55,46 @@ function getAppointmentDates(appointments, filterCallback) {
     dates.sort((date1, date2) => {
         date1 = date1.split('/').reverse().join('');
         date2 = date2.split('/').reverse().join('');
-        return date1 > date2?1: date1 < date2?-1:0;
+        return date1 > date2 ? 1 : date1 < date2 ? -1 : 0;
     });
+    if (onlyYear) {
+        let yearSet = new Set(dates.map(date => date.split('/').pop()));
+        dates = Array.from(yearSet);
+    }
     return dates;
 }
 
 function resetAppointmentsForDemo(appointments) {
     //Keep current appointments with their state in a seperate key
-    lockr.set('appointments-old',appointments);
+    lockr.set('appointments-old', appointments);
     appointments.forEach(ap => {
         ap.done = false;
         ap.cancelled = false;
     });
-    
+
     lockr.set('appointments', appointments);
+}
+
+
+/**
+ * @class AppointmentManager Handle different messages by user prvided callbacks
+ */
+class AppointmentManager {
+    constructor(msgReceiver, callbacks) {
+        this.receiver = msgReceiver;
+        let creation = callbacks['registration'];
+        let cancellation = callbacks['cancellation'];
+        let completion = callbacks['completion'];
+        let deletion = callbacks['deletion'];
+        this.receiver.on('registered-new-appointment', creation)
+            .on('appointment-cancelled', cancellation)
+            .on('appointment-completed', completion)
+            .on('appointment-deleted',deletion);
+    }
 }
 module.exports = {
     getAppointmentDates,
     sortAppointments,
-    resetAppointmentsForDemo
+    resetAppointmentsForDemo,
+    AppointmentManager
 };

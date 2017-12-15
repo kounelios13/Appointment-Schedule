@@ -1,3 +1,11 @@
 #month-select-row #month-select{
     display:none;
 }
+#stats{
+    height:600px;
+    width:600px;
+}
+
+label{
+    color:white;
+}

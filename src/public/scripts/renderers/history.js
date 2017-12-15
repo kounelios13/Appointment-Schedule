@@ -4,49 +4,85 @@ const {
 const Chart = require('chart.js');
 const lockr = require('lockr');
 const appointments = lockr.get('appointments') || [];
-
-let chart = null;
 const {
-    getAppointmentDates
+    getAppointmentDates,
+    AppointmentManager
 } = require('../scripts/custom_modules/appointment-utilities');
 
+const {
+    stringToOption
+} = require('../scripts/custom_modules/map-functions');
 const {
     monthToStringRepresentation,
     monthNameToNumber
 } = require('../scripts/custom_modules/date-utilities');
 
 
-ipcRenderer.on('appointment-cancelled', (event, id) => {
-    let affectedAppointment = apppointments.find(e => e.id == id);
-    affectedAppointment.cancelled = true;
-    //@TODO
-    //Check if the execution date of the appointment is the same as the one that the user has choosen for the chart.If yes redraw the chart with new data
-});
+/**
+ * Render a chart from a set of data
+ * @param {object[]} appointments A set of appointments that will be used as data for chart
+ * @param {Chart} chart A chart instance
+ * @param {string} title Title of chart
+ */
+function buildChartFromAppointments(appointments, chart,title) {
+    console.log(chart)
+    let completed = appointments.filter(e => e.done).length;
+    let cancelled = appointments.filter(e => e.cancelled).length;
+    let pending = appointments.length - completed - cancelled;
+    chart.data.datasets[0].data = [completed, cancelled, pending];
+    chart.update();
+}
 
-ipcRenderer.on('appointment-completed', (event, id) => {
-    let affectedAppointment = apppointments.find(e => e.id == id);
-    affectedAppointment.done = true;
-    //@TODO
-    //Check if the execution date of the appointment is the same as the one that the user has choosen for the chart.If yes redraw the chart with new data
-});
+/**
+ * From a list of appointments find those that matches a specific month and year
+ * @param {object[]} appointemnts The list to filter 
+ * @param {string} year The year that an appointment must match to 
+ * @param {string} month The month that an appointment must match to
+ * @param {object[]} results
+ */
+function findAppointments(appointemnts, year, month) {
+    let results = appointemnts.filter(e => {
+        let date = e.executionDate.split('/');
+        // dd-mm-yyyy
+        let eMonth = date[1];
+        let eYear = date[2];
+        return (month == parseInt(eMonth)) && (year == eYear);
+    });
+    return results;
+}
 
+/**
+ * Find if a change in an appointments affects our rendered chart
+ * @param {object} appointment The appointment that caused havoc
+ */
+function handleAppointmentChange(appointment) {
+    let aDate = appointment.executionDate.split('/');
+    let curYear = $('#year-select').val();
+    let curMonthName = $('#month-select').val();
+    let curMonthNumber = monthNameToNumber(curMonthName);
+    //dd-mm-yyyy
+    let aMonth = parseInt(aDate[1]);
+    let aYear = aDate[2];
+    if (aYear != curYear || aMonth != curMonthNumber) {
+        //No need to update our chart
+        return;
+    }
+    //Instead of finding all the appointments again and rebuilding the
+    //chart trigger a change on the '#month-select' dropdown that will do the same for us 
+    $('#month-select').trigger('change');
+}
 
-ipcRenderer.on('registered-new-appointment', (event, appointment) => {
-    appointments.push(appointment);
-
-});
 
 /**
  * The date format used throughout the whole project is dd-mm-yyyy
  *  
  */
 
-
 /**
  * Filter appointments by a given year
  * @param {object[]} appointments A list of appointments
  * @param {string} year
- * @returns {object[]} filteredAppointemnts The appointemnts that ther execution date matches the year given by the user
+ * @returns {object[]} filteredAppointments The appointemnts that ther execution date matches the year given by the user
  * 
  */
 function gatherAppointmentsByYear(appointments, year) {
@@ -61,28 +97,43 @@ function gatherAppointmentsByYear(appointments, year) {
  * Filter appointments by a given month
  * @param {object[]} appointments A list of appointments
  * @param {string} month
- * @returns {object[]} filteredAppointemnts The appointemnts that ther execution date matches the month given by the user
+ * @returns {object[]} filteredAppointments The appointemnts that ther execution date matches the month given by the user
  * 
  */
 function gatherAppointmentsByMonth(appointments, month) {
-    let filteredAppointemnts = appointments.filter(ap => {
+    let filteredAppointments = appointments.filter(ap => {
         let apMonth = ap.executionDate.split('/')[1];
         return parseInt(apMonth) == parseInt(month);
     });
-    return filteredAppointemnts;
+    return filteredAppointments;
 }
 
 
-function buildChartFromAppointments(appointments, chart) {
-    let completed = appointments.filter(e => e.done).length;
-    let cancelled = appointments.filter(e => e.cancelled).length;
-    let pending = appointments.filter(e => (!e.done && !e.cancelled)).length;
-    chart.data.datasets[0].data = [completed, cancelled, pending];
-    chart.update();
+function displayYearsAsOptions(years) {
+    let yearFragment = document.createDocumentFragment();
+    years.map(stringToOption).forEach(option => {
+        yearFragment.appendChild(option);
+    });
+    const yearSelect = document.getElementById('year-select');
+    yearSelect.appendChild(yearFragment);
+    $(yearSelect).material_select();
+    $(yearSelect).trigger('change');
 }
-$(function () {
-    const canvas = document.getElementById('stats');
-    chart = new Chart(canvas, {
+
+function displayMonthsAsOptions(months) {
+    let monthSelect = document.getElementById('month-select');
+    $(monthSelect).empty();
+    $(monthSelect).material_select('destroy');
+    let monthFragment = document.createDocumentFragment();
+    let options = months.map(stringToOption);
+    options.forEach(option => monthFragment.appendChild(option));
+    $(monthSelect).append(monthFragment);
+    $(monthSelect).material_select();
+    $(monthSelect).trigger('change');
+}
+
+function initChart(canvas) {
+    let chart = new Chart(canvas, {
         responsive: true,
         maintainAspectRatio: true,
         type: 'bar',
@@ -92,20 +143,14 @@ $(function () {
                 label: '# Appointment status',
                 data: [10, 10, 10],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(205, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
+                    'rgba(255, 206, 86, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255,99,132,1)',
                     'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
+                    'rgba(255, 206, 86, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -120,23 +165,15 @@ $(function () {
             }
         }
     });
-    let appointemntYears = getAppointmentDates(appointments, null, true);
-    let yearFragment = document.createDocumentFragment();
-    appointemntYears.forEach(year => {
-        let option = document.createElement('option');
-        option.innerText = year;
-        yearFragment.appendChild(option);
-    });
+    return chart;
+}
+$(function () {
+    const canvas = document.getElementById('stats');
+    const chart = initChart(canvas);
+    let appointmentYears = getAppointmentDates(appointments, null, true);
     let yearSelect = document.getElementById('year-select');
-    yearSelect.appendChild(yearFragment);
-    $(yearSelect).material_select();
+    displayYearsAsOptions(appointmentYears);
     $('#year-select').on('change', function () {
-        const fragment = document.createDocumentFragment();
-        let monthSelect = document.getElementById('month-select');
-        //Clear innerHTML begore material_select('destroy')
-        monthSelect.innerHTML = '';
-        let monthFragment = document.createDocumentFragment();
-        $("#month-select").empty();
         let selectedYear = $(this).val();
         let filteredAppointments = gatherAppointmentsByYear(appointments, selectedYear);
         let months = filteredAppointments.map(a => {
@@ -144,25 +181,45 @@ $(function () {
             return parseInt(month);
         });
         months = Array.from(new Set(months)).map(monthToStringRepresentation);
-
-        months.forEach(month => {
-            let option = document.createElement('option');
-            option.innerText = month;
-            monthFragment.appendChild(option);
-        });
-        monthSelect.appendChild(monthFragment);
-        //$("#month-select").material_select('destroy');
-        $("#month-select").material_select();
-        $('#month-select').trigger('change');
+        displayMonthsAsOptions(months);
     });
-    $('#month-select').on('change', function () {
+    $('#month-select').on('change', function (e) {
         let selectedMonth = monthNameToNumber($(this).val());
         let selectedYear = yearSelect.value;
         let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
-        let filteredAppointments = gatherAppointmentsByMonth(appointmentsForYear, selectedMonth);
-        if (selectedMonth && selectedYear && appointmentsForYear && filteredAppointments) {
-            buildChartFromAppointments(filteredAppointments, chart);
-        }
+        let filteredAppointments = findAppointments(appointments, selectedYear, selectedMonth);
+        buildChartFromAppointments(filteredAppointments, chart);
     });
     $('#year-select').trigger('change');
+    //appointmentManager needs to be created after all event handlers are added where needed
+    const appointmentManager = new AppointmentManager(ipcRenderer, {
+        registration: (e, data) => {
+            appointments.push(data);
+            handleAppointmentChange(data);
+            console.log('Added new appointment');
+        },
+        completion: (e, id) => {
+            let affectedAppointment = appointments.find(a => a.id == id);
+            let affectedAppointmentIndex = appointments.indexOf(affectedAppointment);
+            affectedAppointment.done = true;
+            handleAppointmentChange(affectedAppointment);
+            console.log('Change of state.Complete');
+        },
+        cancellation: (e, id) => {
+            let affectedAppointment = appointments.find(a => a.id == id);
+            let affectedAppointmentIndex = appointments.indexOf(affectedAppointment);
+            affectedAppointment.cancelled = true;
+            handleAppointmentChange(affectedAppointment);
+            console.log('Change of state.cancel');
+        },
+        deletion: (e, id) => {
+            //Keep a backup of the appointment that we will delete so we can use it
+            //in handleAppointmentChange()
+            let affectedAppointment = appointments.find(a => a.id == id);
+            let affectedAppointmentIndex = appointments.indexOf(affectedAppointment);
+            delete appointments[affectedAppointmentIndex];
+            handleAppointmentChange(affectedAppointment);
+            console.log('Deleting');
+        }
+    });
 });

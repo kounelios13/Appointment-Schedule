@@ -18,13 +18,14 @@ const {
 } = require('../scripts/custom_modules/date-utilities');
 
 
+
 /**
  * Render a chart from a set of data
  * @param {object[]} appointments A set of appointments that will be used as data for chart
  * @param {Chart} chart A chart instance
  * @param {string} title Title of chart
  */
-function buildChartFromAppointments(appointments, chart,title) {
+function buildChartFromAppointments(appointments, chart, title) {
     console.log(chart)
     let completed = appointments.filter(e => e.done).length;
     let cancelled = appointments.filter(e => e.cancelled).length;
@@ -71,8 +72,6 @@ function handleAppointmentChange(appointment) {
     //chart trigger a change on the '#month-select' dropdown that will do the same for us 
     $('#month-select').trigger('change');
 }
-
-
 /**
  * The date format used throughout the whole project is dd-mm-yyyy
  *  
@@ -132,6 +131,11 @@ function displayMonthsAsOptions(months) {
     $(monthSelect).trigger('change');
 }
 
+/**
+ * Create a new Chart.js instance and return it
+ * @param {DOMElement} canvas A canvas element to be used for chart
+ * @returns {Chart} chart
+ */
 function initChart(canvas) {
     let chart = new Chart(canvas, {
         responsive: true,
@@ -156,6 +160,12 @@ function initChart(canvas) {
             }]
         },
         options: {
+            legend: {
+                labels: {
+                    fontSize: 17,
+                    fontColor: 'red'
+                }
+            },
             scales: {
                 yAxes: [{
                     ticks: {
@@ -167,30 +177,41 @@ function initChart(canvas) {
     });
     return chart;
 }
-$(function () {
-    const canvas = document.getElementById('stats');
-    const chart = initChart(canvas);
-    let appointmentYears = getAppointmentDates(appointments, null, true);
+
+/**
+ * This function adds the event handlers to the DOM Elements that need to do something
+ * @param {Chart} chart A chart instance needed for some events
+ */
+function initEventHandlers(chart) {
     let yearSelect = document.getElementById('year-select');
-    displayYearsAsOptions(appointmentYears);
-    $('#year-select').on('change', function () {
+    let monthSelect = document.getElementById('month-select');
+    $(yearSelect).on('change', function () {
         let selectedYear = $(this).val();
         let filteredAppointments = gatherAppointmentsByYear(appointments, selectedYear);
         let months = filteredAppointments.map(a => {
             let month = a.executionDate.split('/')[1];
             return parseInt(month);
         });
+        //Convert months to Set to get rid of duplicates and then convert the set to an array
         months = Array.from(new Set(months)).map(monthToStringRepresentation);
         displayMonthsAsOptions(months);
     });
-    $('#month-select').on('change', function (e) {
-        let selectedMonth = monthNameToNumber($(this).val());
+    $(monthSelect).on('change', function (e) {
         let selectedYear = yearSelect.value;
+        let selectedMonth = monthNameToNumber(monthSelect.value);
         let appointmentsForYear = gatherAppointmentsByYear(appointments, selectedYear);
         let filteredAppointments = findAppointments(appointments, selectedYear, selectedMonth);
         buildChartFromAppointments(filteredAppointments, chart);
     });
-    $('#year-select').trigger('change');
+}
+$(function () {
+    const canvas = document.getElementById('stats');
+    const chart = initChart(canvas);
+    let appointmentYears = getAppointmentDates(appointments, null, true);
+    displayYearsAsOptions(appointmentYears);
+    initEventHandlers(chart);
+    let yearSelect = document.getElementById('year-select');
+    $(yearSelect).trigger('change');
     //appointmentManager needs to be created after all event handlers are added where needed
     const appointmentManager = new AppointmentManager(ipcRenderer, {
         registration: (e, data) => {

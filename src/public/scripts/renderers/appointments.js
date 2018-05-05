@@ -187,6 +187,7 @@ $(function () {
                 $("#no-appointments-left").hide('slow');
                 //@TODO
                 //Maybe trigger a change event 
+                //Why the fuck should i fire a change event???
             }
         }
         const selectedDate = $(this).val();

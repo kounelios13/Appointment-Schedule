@@ -13,7 +13,10 @@
     "generate-docs": "rm -rf jsdoc ;jsdoc -c conf.json"
   },
   "keywords": [],
-  "author": "kounelios",
+  "author": {
+    "name":"Manos Kounelakis",
+    "email":"pkounelios@gmail.com"
+  },
   "license": "MIT",
   "config": {
     "forge": {
@@ -25,19 +28,18 @@
           "zip"
         ],
         "linux": [
-          "deb",
-          "rpm"
+          "deb"
         ]
       },
       "electronPackagerConfig": {},
       "electronWinstallerConfig": {
-        "name": ""
+        "name": "mama"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "kounelios13",
+        "name": "Appointment-Schedule"
       },
       "windowsStoreConfig": {
         "packageName": ""
